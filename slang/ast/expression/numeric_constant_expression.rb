@@ -1,7 +1,7 @@
 require_relative 'expression'
 
 class NumericConstantExpression < Expression
-  attr_accessor :value
+  attr_reader :value
 
   def initialize(value)
     @value = value

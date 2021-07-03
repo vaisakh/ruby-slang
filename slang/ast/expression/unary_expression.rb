@@ -2,7 +2,7 @@ require_relative 'expression'
 require_relative '../meta/operator'
 
 class UnaryExpression < Expression
-  attr_accessor :expression, :operator
+  attr_reader :expression, :operator
 
   def initialize(exp, op)
     @expression = exp

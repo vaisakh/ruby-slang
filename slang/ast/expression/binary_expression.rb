@@ -2,7 +2,7 @@ require_relative 'expression'
 require_relative '../meta/operator'
 
 class BinaryExpression < Expression
-  attr_accessor :l_expression, :r_expression, :operator
+  attr_reader :l_expression, :r_expression, :operator
 
   def initialize(l_expression, r_expression, operator)
     @l_expression = l_expression
