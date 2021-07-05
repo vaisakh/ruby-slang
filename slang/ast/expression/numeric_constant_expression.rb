@@ -7,7 +7,7 @@ class NumericConstantExpression < Expression
     @value = value
   end
 
-  def evaluate(runtime_context)
-    @value
+  def accept(visitor)
+    visitor.visit(self)
   end
 end

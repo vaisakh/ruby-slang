@@ -9,10 +9,15 @@ class UnaryExpression < Expression
     @operator = op
   end
 
-  def evaluate(runtime_context)
-    case @operator
-    when Operator::PLUS then @expression.evaluate(runtime_context)
-    when Operator::MINUS then - @expression.evaluate(runtime_context)
-    end
+  def get_operator
+    @operator
+  end
+
+  def get_expression
+    @expression
+  end
+
+  def accept visitor
+    visitor.visit(self)
   end
 end

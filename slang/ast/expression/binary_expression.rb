@@ -9,13 +9,20 @@ class BinaryExpression < Expression
     @r_expression = r_expression
     @operator = operator
   end
+  
+  def get_operator
+    @operator
+  end
 
-  def evaluate(runtime_context)
-    case @operator
-    when Operator::PLUS then @l_expression.evaluate(runtime_context) + @r_expression.evaluate(runtime_context)
-    when Operator::MINUS then @l_expression.evaluate(runtime_context) - @r_expression.evaluate(runtime_context)
-    when Operator::DIVIDE then @l_expression.evaluate(runtime_context) / @r_expression.evaluate(runtime_context)
-    when Operator::MULTIPLY then @l_expression.evaluate(runtime_context) * @r_expression.evaluate(runtime_context)
-    end
+  def get_left_expression
+    @l_expression
+  end
+
+  def get_right_expression
+    @r_expression
+  end
+
+  def accept visitor
+    visitor.visit(self)
   end
 end
