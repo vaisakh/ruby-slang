@@ -58,7 +58,7 @@ class Lexer
 			end
 
 			@number = str.to_i
-			token = Token::TOK_DOUBLE
+			token = Token::TOK_NUMERIC
 		else
 			raise Exception.new "Error while analyzing tokens"
 		end

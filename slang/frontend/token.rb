@@ -8,5 +8,5 @@ module Token
 	TOK_CLOSED_PAREN = 'TOK_CLOSED_PAREN' # ')
 
 	TOK_NULL = 'TOK_NULL' # End of a string
-	TOK_DOUBLE = 'TOK_DOUBLE' #To be removed?
+	TOK_NUMERIC = 'TOK_NUMERIC' # [0-9]+
 end

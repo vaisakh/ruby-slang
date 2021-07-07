@@ -45,7 +45,7 @@ class RDParser < Lexer
 
   def Factor
     returnValue = nil
-    if(@current_token == Token::TOK_DOUBLE)
+    if(@current_token == Token::TOK_NUMERIC)
       returnValue = NumericConstantExpression.new(get_number())
       @current_token = get_token()
     elsif @current_token == Token::TOK_OPEN_PAREN
