@@ -3,14 +3,15 @@ require_relative '../slang/ast/expression/numeric_constant_expression'
 require_relative '../slang/ast/meta/operator'
 require_relative '../slang/ast/expression/unary_expression'
 require_relative '../slang/builders/expression_builder'
-require_relative '../slang/interpreter/interpreter'
+require_relative '../slang/interpreter/reverse_polish_evaluator'
 
 class Main
   def run
     b = ExpressionBuilder.new("-2*(3+3)+3+1")
+    puts "-2*(3+3) +3+1"
     e = b.get_expression()
-    x = e.accept(Interpreter.new)
-    puts x
+
+    e.accept(ReversePolishEvaluator.new);
   end
 end
 
