@@ -8,5 +8,10 @@ module Token
 	TOK_CLOSED_PAREN = 'TOK_CLOSED_PAREN' # ')
 
 	TOK_NULL = 'TOK_NULL' # End of a string
+	TOK_PRINT = 'TOK_PRINT' # Print statement
+	TOK_PRINTLN = 'TOK_PRINTLN' # PrintLine statement
+	TOK_UNQUOTED_STRING = 'TOK_UNQUOTED_STRING' # Variable name, function name
+	TOK_SEMI = 'TOK_SEMI' # ';'
+
 	TOK_NUMERIC = 'TOK_NUMERIC' # [0-9]+
 end

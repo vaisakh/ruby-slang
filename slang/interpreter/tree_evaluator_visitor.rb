@@ -25,4 +25,14 @@ class TreeEvaluatorVisitor < Visitor
     when Operator::MULTIPLY then l_expression_value * r_expression_value
     end
   end
+
+  def visit_PrintlineStatement subject
+    value = subject.get_expression().accept(self)
+    puts value.to_s
+  end
+
+  def visit_PrintStatement subject
+    value = subject.get_expression().accept(self)
+    print value.to_s
+  end
 end

@@ -1,10 +1,13 @@
 require_relative './token'
+require_relative '../ast/meta/value_table'
+require_relative '../ast/meta/value_table'
 
 class Lexer
 	attr_reader	:expression
 	attr_reader	:cursor
 	attr_reader	:length
 	attr_reader	:number
+	attr_reader :keywords
 
 	def initialize(expression)
 		@expression = expression
@@ -15,8 +18,8 @@ class Lexer
 	def get_token
 		token = Token::ILLEGAL_TOKEN
 
-		# Skip white space
-		while @cursor < @length && @expression[@cursor] == ' ' || @expression[@cursor] == '\t' do
+		# Skip white space  & new line characters
+		while @cursor < @length && [" ", "\t", "\r", "\n"].include?(@expression[@cursor])
 			@cursor += 1
 		end
 
@@ -44,6 +47,9 @@ class Lexer
 		when ')'
 			token = Token::TOK_CLOSED_PAREN
 			@cursor +=1
+		when ';'
+			token = Token::TOK_SEMI
+			@cursor += 1
 		when '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
 			str = ""
 			while @cursor < @length && 
@@ -59,10 +65,21 @@ class Lexer
 
 			@number = str.to_i
 			token = Token::TOK_NUMERIC
+		when /[a-zA-Z]$/
+			str = ""
+			while @cursor < @length && alpha_numeric?(@expression[@cursor])
+				str += @expression[@cursor]
+				@cursor += 1
+			end
+			token = ValueTable[str.upcase]
 		else
 			raise Exception.new "Error while analyzing tokens"
 		end
 		return token
+	end
+	
+	def alpha_numeric?(char)
+		(char =~ /[a-zA-Z0-9]/) ? true : false
 	end
 
 	def get_number
