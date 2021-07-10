@@ -8,8 +8,8 @@ class TreeEvaluatorVisitor < Visitor
 
   def visit_UnaryExpression subject
     case subject.operator
-    when Operator::PLUS then subject.expression.accept(self)
-    when Operator::MINUS then - subject.expression.accept(self)
+    when Operator::PLUS then subject.get_expression().accept(self)
+    when Operator::MINUS then - subject.get_expression().accept(self)
     end
   end
 
