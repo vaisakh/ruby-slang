@@ -16,11 +16,11 @@ class RDParser < Lexer
   end
 
   def parse
-    # get_next()
     @current_token = get_token()
     get_statement_list()
   end
 
+  # <stmtlist> := { <statement> }+
   def get_statement_list
     statements = []
     while(@current_token != Token::TOK_NULL)
@@ -32,6 +32,7 @@ class RDParser < Lexer
     statements
   end
 
+  # <statement> := <printstmt> | <printlinestmt>
   def parse_statement
     statement = nil
     case @current_token
@@ -47,18 +48,20 @@ class RDParser < Lexer
     statement
   end
 
+  # <printstmt> := print <expr>;
   def parse_print_statement
     @current_token = get_token()
-    expression = Expr()
+    expression = parseExpression()
     if(@current_token != Token::TOK_SEMI)
-      raise Exception.new ": expected"
+      raise Exception.new "; expected"
     end
     PrintStatement.new(expression)
   end
 
+  # <printlinestmt>:= printline <expr>;
   def parse_print_line_statement
     @current_token = get_token()
-    expression = Expr()
+    expression = parseExpression()
     if(@current_token != Token::TOK_SEMI)
       raise Exception.new "; expected"
     end
@@ -67,43 +70,46 @@ class RDParser < Lexer
 
   def call_expression
     @current_token = get_token()
-    Expr()
+    parseExpression()
   end
 
-  def Expr
-    returnValue = Term()
+  # <Expr> ::= <Term> | <Term> { + | - } <Expr>
+  def parseExpression
+    expression = parseTerm()
     while @current_token == Token::TOK_PLUS || @current_token == Token::TOK_MINUS
       operator_token = @current_token
       @current_token = get_token()
 
-      exp = Expr()
+      exp = parseExpression()
       operator_token = operator_token == Token::TOK_PLUS ? Operator::PLUS : Operator::MINUS
-      returnValue = BinaryExpression.new(returnValue, exp, operator_token)
+      expression = BinaryExpression.new(expression, exp, operator_token)
     end
-    returnValue
+    expression
   end
 
-  def Term
-    returnValue = Factor()
+  # <Term> ::= <Factor> | <Factor> {*|/} <Term>
+  def parseTerm
+    expression = parseFactor()
     while @current_token == Token::TOK_MULTIPLY || @current_token == Token::TOK_DIVIDE
       operator_token = @current_token
       @current_token = get_token()
 
-      exp = Term()
+      exp = parseTerm()
       operator_token = operator_token == Token::TOK_MULTIPLY ? Operator::MULTIPLY : Operator::DIVIDE
-      returnValue = BinaryExpression.new(returnValue, exp, operator_token)
+      expression = BinaryExpression.new(expression, exp, operator_token)
     end
-    returnValue
+    expression
   end
 
-  def Factor
-    returnValue = nil
+  # <Factor>::= <number> | ( <expr> ) | {+|-} <factor>
+  def parseFactor
+    expression = nil
     if(@current_token == Token::TOK_NUMERIC)
-      returnValue = NumericConstantExpression.new(get_number())
+      expression = NumericConstantExpression.new(get_number())
       @current_token = get_token()
     elsif @current_token == Token::TOK_OPEN_PAREN
       @current_token = get_token()
-      returnValue = Expr()
+      expression = parseExpression()
 
       if(@current_token != Token::TOK_CLOSED_PAREN)
         raise Exception.new "Missing closing parenthesis"
@@ -112,14 +118,13 @@ class RDParser < Lexer
     elsif @current_token == Token::TOK_PLUS || @current_token == Token::TOK_MINUS
       operator_token = @current_token
       @current_token = get_token()
-      
-      returnValue = Factor()
+
+      expression = parseFactor()
       operator_token = operator_token == Token::TOK_PLUS ? Operator::PLUS : Operator::MINUS
-      returnValue = UnaryExpression.new(returnValue, operator_token)
-      returnValue
+      expression = UnaryExpression.new(expression, operator_token)
     else
       raise Exception.new "Illegal token"
     end
-    returnValue
+    expression
   end
 end
