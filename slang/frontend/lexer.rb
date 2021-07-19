@@ -7,12 +7,19 @@ class Lexer
 	attr_reader	:cursor
 	attr_reader	:length
 	attr_reader	:number
-	attr_reader :keywords
+  attr_reader :current_token
+  attr_reader :last_token;
+  attr_reader :last_str
 
 	def initialize(expression)
 		@expression = expression
 		@length = expression.length
 		@cursor = 0
+	end
+
+	def get_next
+		@last_token = @current_token
+		@current_token = get_token()
 	end
 
 	def get_token
@@ -50,6 +57,9 @@ class Lexer
 		when ';'
 			token = Token::TOK_SEMI
 			@cursor += 1
+		when '='
+			token = Token::TOK_ASSIGN
+			@cursor += 1
 		when /[0-9]/
 			str = ""
 			while @cursor < @length && is_digit?(@expression[@cursor])
@@ -65,7 +75,15 @@ class Lexer
 				str += @expression[@cursor]
 				@cursor += 1
 			end
-			token = ValueTable[str.upcase]
+
+			str = str.upcase
+			if(ValueTable.member? str)
+				token = ValueTable[str.upcase]
+				return token
+			end
+
+			@last_str = str
+			return Token::TOK_UNQUOTED_STRING
 		else
 			raise Exception.new "Error while analyzing tokens"
 		end
